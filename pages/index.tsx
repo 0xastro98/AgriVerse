@@ -32,21 +32,26 @@ const Home: NextPage = () => {
       .addCrop(cropName, 'fruit')
       .accounts({cropInfo: publicKey, systemProgram: programId})
       .transaction();
-
+    const blockhash = await connection.getLatestBlockhash()
+    const sig =  await sendTransaction(transaction, connection);
     console.log(transaction)
-    if(transaction.recentBlockhash){
+    await connection.confirmTransaction(
+      {sig, ...blockhash},
+      "confirmed"
+    )
+  /* if(transaction.recentBlockhash){
       alert(transaction.recentBlockhash)
       const tx = VersionedTransaction.deserialize(Buffer.from(transaction.recentBlockhash, "base64"));
 
-      const sig =  await sendTransaction(tx, connection /*{skipPreflight: true}*/);
+      const sig =  await sendTransaction(tx, connection {skipPreflight: true});
       alert(sig)
       console.log(sig)
-    }
+  }
     else{
-      const sig =  await sendTransaction(transaction, connection /*{skipPreflight: true}*/);
+      const sig =  await sendTransaction(transaction, connection /*{skipPreflight: true});
       alert(sig)
-      console.log(sig)
-    }
+      console.log(sig) 
+    } */
   }
   return (
       <main className="flex items-center justify-center min-h-screen">
