@@ -8,7 +8,7 @@ import {Program, Idl, AnchorProvider, setProvider} from '@coral-xyz/anchor';
 import { useAnchorWallet, useConnection, useWallet} from "@solana/wallet-adapter-react";
 import idl from '../idl/idl.json'
 import {AgriVerse} from '../types/idl'
-import { Keypair, PublicKey, VersionedTransaction } from "@solana/web3.js";
+import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import {Cabin} from 'next/font/google'
 import {Form, Button} from 'react-bootstrap'
 
@@ -28,20 +28,38 @@ const Home: NextPage = () => {
   const [cropName, setCropName] = useState('')
  
   const addCrop = async() => {
-    const transaction = await program.methods
-      .addCrop(cropName, 'fruit')
-      .accounts({cropInfo: publicKey, systemProgram: programId})
-      .transaction();
-    const blockhash = await connection.getLatestBlockhash()
-    const sig =  await sendTransaction(transaction, connection);
-    console.log(transaction)
-    await connection.confirmTransaction(
-      {sig, ...blockhash},
-      "confirmed"
-    )
-  /* if(transaction.recentBlockhash){
-      alert(transaction.recentBlockhash)
-      const tx = VersionedTransaction.deserialize(Buffer.from(transaction.recentBlockhash, "base64"));
+    try {
+      const transaction = await program.methods
+        .addCrop(cropName, 'fruit')
+        .accounts({
+          cropInfo: publicKey,
+          owner: publicKey,
+          systemProgram: SystemProgram.programId
+        })
+        .transaction();
+      
+      const latestBlockhash = await connection.getLatestBlockhash();
+      transaction.recentBlockhash = latestBlockhash.blockhash;
+      
+      const signature = await sendTransaction(transaction, connection);
+      console.log('Transaction sent. Signature:', signature);
+      
+      const confirmation = await connection.confirmTransaction({
+        signature,
+        blockhash: latestBlockhash.blockhash,
+        lastValidBlockHeight: latestBlockhash.lastValidBlockHeight
+      });
+      
+      if (confirmation.value.err) {
+        throw new Error('Transaction failed');
+      }
+      
+      console.log('Transaction confirmed');
+      alert('Crop added successfully!');
+    } catch (error) {
+      console.error('Transaction failed:', error);
+      alert('Failed to add crop: ' + error.message);
+    }
 
       const sig =  await sendTransaction(tx, connection {skipPreflight: true});
       alert(sig)
