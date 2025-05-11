@@ -6,15 +6,19 @@ import styles from "../styles/Home.module.css";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import {Program, Idl, AnchorProvider, setProvider} from '@coral-xyz/anchor';
 import { useAnchorWallet, useConnection, useWallet} from "@solana/wallet-adapter-react";
+import {usePrivy, useLoginWithEmail, useSolanaWallets} from '@privy-io/react-auth'
 import idl from '../idl/idl.json'
 import {AgriVerse} from '../types/idl'
-import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
+import { Keypair, PublicKey, VersionedTransaction, Transaction, sendAndConfirmTransaction} from "@solana/web3.js";
 import {Cabin} from 'next/font/google'
 import {Form, Button} from 'react-bootstrap'
 
 const cabin = Cabin({subsets : ['latin']})
 
 const Home: NextPage = () => {
+  const {ready} = usePrivy()
+  const {createWallet} = useSolanaWallets()
+  const sender = Keypair.generate()
   const { connection } = useConnection()
   const {sendTransaction} = useWallet()
   const {publicKey} = useWallet()
@@ -28,48 +32,22 @@ const Home: NextPage = () => {
   const [cropName, setCropName] = useState('')
  
   const addCrop = async() => {
-    try {
-      const transaction = await program.methods
-        .addCrop(cropName, 'fruit')
-        .accounts({
-          cropInfo: publicKey,
-          owner: publicKey,
-          systemProgram: SystemProgram.programId
-        })
-        .transaction();
-      
-      const latestBlockhash = await connection.getLatestBlockhash();
-      transaction.recentBlockhash = latestBlockhash.blockhash;
-      
-      const signature = await sendTransaction(transaction, connection);
-      console.log('Transaction sent. Signature:', signature);
-      
-      const confirmation = await connection.confirmTransaction({
-        signature,
-        blockhash: latestBlockhash.blockhash,
-        lastValidBlockHeight: latestBlockhash.lastValidBlockHeight
-      });
-      
-      if (confirmation.value.err) {
-        throw new Error('Transaction failed');
-      }
-      
-      console.log('Transaction confirmed');
-      alert('Crop added successfully!');
-    } catch (error) {
-      console.error('Transaction failed:', error);
-      alert('Failed to add crop: ' + error.message);
-    }
-
-      const sig =  await sendTransaction(tx, connection {skipPreflight: true});
-      alert(sig)
-      console.log(sig)
-  }
-    else{
-      const sig =  await sendTransaction(transaction, connection /*{skipPreflight: true});
-      alert(sig)
-      console.log(sig) 
-    } */
+    //const transaction = new Transaction()
+    const transaction = await program.methods
+      .addCrop(cropName, 'fruit')
+      .accounts({cropInfo: publicKey, systemProgram: programId})
+      .rpc();
+    //transaction.add(instruction)
+   // const {blockhash} = await connection.getLatestBlockhash('finalized')
+    //transaction.recentBlockhash = blockhash
+    //transaction.feePayer = publicKey
+    //const signedTransaction = await signTransaction(transaction) // From @solana/wallet-adapter-react
+   /* const {blockhash} = await connection.getLatestBlockhash()
+    transaction.recentBlockhash = blockhash
+    transaction.sign(sender) */
+    //await sendTransaction(transaction, connection)
+    console.log(transaction)
+    
   }
   return (
       <main className="flex items-center justify-center min-h-screen">
