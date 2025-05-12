@@ -30,11 +30,12 @@ const Home: NextPage = () => {
   setProvider(provider)
   const program = new Program(idl as AgriVerse, provider)
   const [cropName, setCropName] = useState('')
- 
+  const [cropType, setCropType] = useState('')
+  
   const addCrop = async() => {
     //const transaction = new Transaction()
     const transaction = await program.methods
-      .addCrop(cropName, 'fruit')
+      .addCrop(cropName, cropType)
       .accounts({cropInfo: publicKey, systemProgram: programId})
       .rpc();
     //transaction.add(instruction)
@@ -56,15 +57,27 @@ const Home: NextPage = () => {
             <WalletMultiButton style={{}} />
           </div>
         </div> 
-        <div>
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Control type="text" placeholder="Enter a crop" onChange={(e:any)=>setCropName(e.target.value)}/>
-              <Button variant="primary" onClick={addCrop}>Add</Button>
-            </Form.Group>
-            
-          </Form>
-        </div>
+        <center>
+          <div className={styles.avform}>
+            <Form>
+              <Form.Group className="mb-4">
+                <Form.Control type="text" placeholder="Enter a crop" onChange={(e:any)=>setCropName(e.target.value)}/>
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <Form.Select defaultValue={'Select Type'}>
+                  <option disabled>Select Type</option>
+                  <option value="fruit">Fruit</option>
+                  <option value="vegetable">Vegetable</option>
+                </Form.Select>
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <div className={styles.avbtn}>
+                  <Button variant="custom" onClick={addCrop}>Add</Button>
+                </div>
+              </Form.Group>
+            </Form>
+          </div>
+        </center>
       </main>
   );
 };

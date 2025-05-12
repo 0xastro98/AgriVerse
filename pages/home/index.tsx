@@ -8,7 +8,14 @@ export default function Home(){
     <>
       <center>
         <div>
-      
+          {
+            ready && authenticated ?
+            <>
+              <h1>Your ID is {user.id}</h1>
+            </>
+            :
+            null
+          }
         </div>
       </center>
     </>
