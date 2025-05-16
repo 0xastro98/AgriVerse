@@ -13,6 +13,12 @@ export default function Dashboard(){
   return(
     <>
       <div className={styles.avpage}>
+        {ready && authenticated ? 
+          <>
+            
+          </>
+          : null
+        }
       </div>
     </>
   )

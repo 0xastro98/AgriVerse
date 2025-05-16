@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react'
 import styles from '../../../styles/Home.module.css'
 import {useSolanaWallets} from '@privy-io/react-auth'
-import {Inter} from 'next/font/google'
+import {Amaranth} from 'next/font/google'
 import {Button} from 'react-bootstrap'
 
-const inter = Inter({subsets : ['latin']})
+const amaranth = Amaranth({subsets : ['latin'], weight: '400'})
 
 export default function Create(){
   const {createWallet} = useSolanaWallets()
@@ -16,14 +16,16 @@ export default function Create(){
   }
   return(
     <>
-      <center>
-        <div className={`${styles.avform} ${inter.className}`}>
-           <h2>Create A Solana Wallet</h2>
-           <div className={styles.avbtn}>
-             <Button variant="custom" onClick={createWalletFunc}>Create</Button>
-           </div>
-        </div>
-      </center>
+      <div className={amaranth.className}>
+        <center>
+          <div className={`${styles.avform}`}>
+             <h2>Create A Solana Wallet</h2>
+             <div className={styles.avbtn}>
+               <Button variant="custom" onClick={createWalletFunc}>Create</Button>
+             </div>
+          </div>
+        </center>
+      </div>
     </>
   )
 }

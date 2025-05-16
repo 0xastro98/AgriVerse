@@ -2,10 +2,10 @@ import React, {useState, useEffect} from 'react'
 import styles from '../../styles/Home.module.css'
 import {Form, Button} from 'react-bootstrap'
 import {useLoginWithEmail} from '@privy-io/react-auth'
-import {Inter} from 'next/font/google'
+import {Amaranth} from 'next/font/google'
 import {useRouter} from 'next/router'
 
-const inter = Inter({subsets : ['latin']})
+const amaranth = Amaranth({subsets : ['latin'], weight: '400'})
 
 export default function SignUp(){
   const router = useRouter()
@@ -35,8 +35,9 @@ export default function SignUp(){
   
   return(
     <>
-      <center>
-      <div className={`${styles.avform} ${inter.className}`}>
+      <div className={amaranth.className}>
+        <center>
+      <div className={`${styles.avform}`}>
         <Form>
           {isEmailSent ? 
             <>
@@ -74,6 +75,7 @@ export default function SignUp(){
     
       </div>
       </center>
+      </div>
     </>
   )
 }

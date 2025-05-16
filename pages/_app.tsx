@@ -4,14 +4,19 @@ import type { AppProps } from 'next/app'
 
 import AppWalletProvider from "../providers/AppWalletProvider";
 import AuthProvider from '../providers/AuthProvider';
+import {Amaranth} from 'next/font/google'
+
+const amaranth = Amaranth({subsets: ['latin'], weight: '400'})
 
 function MyApp({ Component, pageProps }: AppProps) {
   return(
-    <AuthProvider>
-      <AppWalletProvider>
-        <Component {...pageProps} />
-      </AppWalletProvider>
-    </AuthProvider>
+    <main className={amaranth.className}>
+      <AuthProvider>
+        <AppWalletProvider>
+          <Component {...pageProps} />
+        </AppWalletProvider>
+      </AuthProvider>
+    </main>
   );
 };
 

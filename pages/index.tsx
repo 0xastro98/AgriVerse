@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import {useRouter} from 'next/router'
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
@@ -9,15 +10,18 @@ import { useAnchorWallet, useConnection, useWallet} from "@solana/wallet-adapter
 import {usePrivy, useLoginWithEmail, useSolanaWallets} from '@privy-io/react-auth'
 import idl from '../idl/idl.json'
 import {AgriVerse} from '../types/idl'
-import { Keypair, PublicKey, VersionedTransaction, Transaction, sendAndConfirmTransaction} from "@solana/web3.js";
-import {Cabin} from 'next/font/google'
+import { Keypair, PublicKey, VersionedTransaction, Transaction, sendAndConfirmTransaction, Connection} from "@solana/web3.js";
+import {Amaranth} from 'next/font/google'
 import {Form, Button} from 'react-bootstrap'
+import { Router } from "next/router";
 
-const cabin = Cabin({subsets : ['latin']})
+const amaranth = Amaranth({subsets : ['latin'], weight: '400'})
 
 const Home: NextPage = () => {
   const {ready} = usePrivy()
+  const router = useRouter()
   const {createWallet} = useSolanaWallets()
+  const solConnection = new Connection("https://api.devnet.solana.com", "confirmed")
   const sender = Keypair.generate()
   const { connection } = useConnection()
   const {sendTransaction} = useWallet()
@@ -52,14 +56,14 @@ const Home: NextPage = () => {
   }
   return (
       <main className="flex items-center justify-center min-h-screen">
-        <div>
+        {/*<div>
           <div className="border hover:border-slate-900 rounded">
             <WalletMultiButton style={{}} />
           </div>
-        </div> 
+        </div>  */}
         <center>
-          <div className={styles.avform}>
-            <Form>
+          <div className={`${styles.avform} ${amaranth.className}`}>
+            {/*  <Form>
               <Form.Group className="mb-4">
                 <Form.Control type="text" placeholder="Enter a crop" onChange={(e:any)=>setCropName(e.target.value)}/>
               </Form.Group>
@@ -73,6 +77,19 @@ const Home: NextPage = () => {
               <Form.Group className="mb-4">
                 <div className={styles.avbtn}>
                   <Button variant="custom" onClick={addCrop}>Add</Button>
+                </div>
+              </Form.Group>
+            </Form> */}
+            <h2>Welcome to AgriVerse</h2>
+            <Form>
+              <Form.Group className="mb-3">
+                <div className={styles.avbtn}>
+                  <Button variant="custom" onClick={() => router.push(`/farm/add`)}>Add Farm</Button>
+                </div>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <div className={styles.avbtn}>
+                  <Button variant="custom" onClick={() => router.push(`/crop/add`)}>Add Crop</Button>
                 </div>
               </Form.Group>
             </Form>
